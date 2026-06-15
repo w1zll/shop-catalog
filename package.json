@@ -1,0 +1,47 @@
+{
+  "name": "shop-catalog",
+  "version": "0.1.0",
+  "description": "Next.js catalog zone for the Shop MFS demo project.",
+  "private": true,
+  "packageManager": "pnpm@11.6.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.6.0"
+  },
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --hostname 0.0.0.0 --port 3001",
+    "format": "prettier . --check",
+    "format:write": "prettier . --write",
+    "lint": "eslint .",
+    "start": "next start --hostname 0.0.0.0 --port 3001",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@w1zll/shop-ui": "0.1.0",
+    "lucide-react": "1.18.0",
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@tailwindcss/postcss": "4.3.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "25.9.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint": "10.5.0",
+    "jsdom": "29.1.1",
+    "postcss": "8.5.6",
+    "prettier": "3.8.4",
+    "tailwindcss": "4.3.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.0",
+    "vitest": "4.1.8"
+  }
+}
