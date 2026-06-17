@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, Button, Card, CardContent, Container, Price } from "@w1zll/shop-ui";
 
+import { AddToCartButtonRemote } from "../../../components/remotes/cart-remotes";
 import { getProduct } from "../../../lib/api-client";
 
 interface ProductPageProps {
@@ -100,12 +101,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   />
                 ) : null}
               </div>
-              <Button className="w-full" disabled={product.stock <= 0}>
-                Добавить в корзину
-              </Button>
+              <AddToCartButtonRemote
+                className="w-full"
+                disabled={product.stock <= 0}
+                maxQuantity={product.stock}
+                productId={product.id}
+              />
               <p className="text-xs leading-5 text-[var(--shop-muted-foreground)]">
-                На этом этапе кнопка является UI-заглушкой. Реальное добавление подключим после cart
-                remote.
+                SEO-контент страницы отрендерен сервером, а добавление в корзину загружается через
+                cart remote.
               </p>
             </CardContent>
           </Card>
