@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Heart, Search, ShoppingBag, ShoppingCart, UserRound } from "lucide-react";
-import { Badge, Button, Container, Logo } from "@w1zll/shop-ui";
+import { Heart, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Button, Container, Logo } from "@w1zll/shop-ui";
+
+import { CartIndicatorRemote } from "./remotes/cart-remotes";
 
 const navItems = [
   { href: "/catalog", label: "Каталог", zone: "catalog" },
@@ -45,12 +47,7 @@ export function CatalogHeader() {
               <Heart className="size-4" aria-hidden="true" />
             </a>
           </Button>
-          <Button asChild className="relative size-10 p-0" variant="outline">
-            <a href="/cart" aria-label="Корзина">
-              <ShoppingCart className="size-4" aria-hidden="true" />
-              <Badge className="absolute -right-2 -top-2 px-1.5 py-0 text-[10px]">0</Badge>
-            </a>
-          </Button>
+          <CartIndicatorRemote />
           <Button asChild className="hidden gap-2 sm:inline-flex" variant="outline">
             <a href="/account">
               <UserRound className="size-4" aria-hidden="true" />
