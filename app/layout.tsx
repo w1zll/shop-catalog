@@ -4,6 +4,7 @@ import { Toaster } from "@w1zll/shop-ui";
 
 import { CatalogFooter } from "../components/catalog-footer";
 import { CatalogHeader } from "../components/catalog-header";
+import { getPublicSiteUrl } from "../lib/site-url";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     template: "%s | Shop Catalog",
   },
   description: "Каталог товаров демонстрационного магазина на микрофронтендах.",
-  metadataBase: new URL("http://localhost:3001"),
+  metadataBase: new URL(getPublicSiteUrl()),
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
