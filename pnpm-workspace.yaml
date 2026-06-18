@@ -7,7 +7,9 @@ allowBuilds:
 
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  - "@w1zll/shop-ui"
   - "@w1zll/shop-ui@0.1.0"
+  - "@w1zll/shop-ui@0.2.0"
   - "next@16.2.9"
   - "react@19.2.7"
   - "react-dom@19.2.7"
