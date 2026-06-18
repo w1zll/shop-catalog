@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@module-federation/runtime": "2.5.1",
-    "@w1zll/shop-ui": "0.1.0",
+    "@w1zll/shop-ui": "0.2.0",
     "lucide-react": "1.18.0",
     "next": "16.2.9",
     "react": "19.2.7",
