@@ -1,4 +1,4 @@
-@import "@w1zll/shop-ui/styles.css";
+﻿@import "@w1zll/shop-ui/styles.css";
 
 @source "../app";
 @source "../components";
@@ -17,4 +17,34 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.catalog-desktop-nav {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.catalog-sm-up {
+  display: none;
+}
+
+.catalog-lg-up {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .catalog-desktop-nav {
+    display: flex;
+  }
+
+  .catalog-sm-up {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .catalog-lg-up {
+    display: block;
+  }
 }

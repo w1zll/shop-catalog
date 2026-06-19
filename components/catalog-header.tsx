@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Heart, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Button, Container, Logo } from "@w1zll/shop-ui";
 
@@ -19,7 +19,7 @@ export function CatalogHeader() {
           <Logo />
         </a>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Основная навигация">
+        <nav className="catalog-desktop-nav" aria-label="Основная навигация">
           {navItems.map((item) => (
             <Button key={item.href} asChild variant="ghost">
               {item.zone === "catalog" ? (
@@ -37,29 +37,30 @@ export function CatalogHeader() {
               <Search className="size-4" aria-hidden="true" />
             </Link>
           </Button>
-          <Button
-            asChild
-            aria-label="Избранное"
-            className="hidden size-10 p-0 sm:inline-flex"
-            variant="ghost"
-          >
-            <a href="/account/favorites">
-              <Heart className="size-4" aria-hidden="true" />
-            </a>
-          </Button>
+          <div className="catalog-sm-up">
+            <Button asChild aria-label="Избранное" className="size-10 p-0" variant="ghost">
+              <a href="/account/favorites">
+                <Heart className="size-4" aria-hidden="true" />
+              </a>
+            </Button>
+          </div>
           <CartIndicatorRemote />
-          <Button asChild className="hidden gap-2 sm:inline-flex" variant="outline">
-            <a href="/account">
-              <UserRound className="size-4" aria-hidden="true" />
-              Войти
-            </a>
-          </Button>
-          <Button asChild className="hidden gap-2 lg:inline-flex" variant="ghost">
-            <Link href="/catalog">
-              <ShoppingBag className="size-4" aria-hidden="true" />
-              Витрина
-            </Link>
-          </Button>
+          <div className="catalog-sm-up">
+            <Button asChild className="gap-2" variant="outline">
+              <a href="/account">
+                <UserRound className="size-4" aria-hidden="true" />
+                Войти
+              </a>
+            </Button>
+          </div>
+          <div className="catalog-lg-up">
+            <Button asChild className="gap-2" variant="ghost">
+              <Link href="/catalog">
+                <ShoppingBag className="size-4" aria-hidden="true" />
+                Витрина
+              </Link>
+            </Button>
+          </div>
         </div>
       </Container>
     </header>
