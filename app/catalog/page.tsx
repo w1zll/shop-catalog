@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, Button, Container } from "@w1zll/shop-ui";
 
@@ -70,7 +70,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
       {featuredProducts.length > 0 && !query.search && !query.category ? (
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">Рекомендуемые товары</h2>
-          <ProductGrid products={featuredProducts.slice(0, 3)} />
+          <ProductGrid products={featuredProducts.slice(0, 3)} variant="featured" />
         </section>
       ) : null}
 
