@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ShoppingCart } from "lucide-react";
 import { Badge, Button } from "@w1zll/shop-ui";
@@ -24,7 +24,14 @@ export function CartIndicatorFallback() {
 }
 
 export function CartIndicatorRemote() {
-  return <RemoteSlot expose="CartIndicator" fallback={<CartIndicatorFallback />} remoteName="cart" />;
+  return (
+    <RemoteSlot
+      errorFallback={() => <CartIndicatorFallback />}
+      expose="CartIndicator"
+      fallback={<CartIndicatorFallback />}
+      remoteName="cart"
+    />
+  );
 }
 
 function AddToCartButtonFallback({ disabled }: Readonly<{ disabled?: boolean }>) {

@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { createInstance, getInstance, type ModuleFederation } from "@module-federation/runtime";
 import * as React from "react";
 import * as ReactDom from "react-dom";
 
-import { getCartManifestUrl } from "./config";
+import { getAccountManifestUrl, getCartManifestUrl } from "./config";
 
 const CATALOG_RUNTIME_NAME = "shop_catalog";
 
@@ -28,6 +28,10 @@ export function getCatalogFederationRuntime() {
       {
         name: "cart",
         entry: getCartManifestUrl(),
+      },
+      {
+        name: "account",
+        entry: getAccountManifestUrl(),
       },
     ],
     shared: {

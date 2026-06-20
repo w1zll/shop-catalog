@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, Button, Card, CardContent, Container, Price } from "@w1zll/shop-ui";
 
+import { FavoriteButton } from "../../../components/favorite-button";
 import { AddToCartButtonRemote } from "../../../components/remotes/cart-remotes";
 import { getProduct } from "../../../lib/api-client";
 
@@ -101,15 +102,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   />
                 ) : null}
               </div>
-              <AddToCartButtonRemote
-                className="w-full"
-                disabled={product.stock <= 0}
-                maxQuantity={product.stock}
-                productId={product.id}
-              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <AddToCartButtonRemote
+                  className="w-full"
+                  disabled={product.stock <= 0}
+                  maxQuantity={product.stock}
+                  productId={product.id}
+                />
+                <FavoriteButton productId={product.id} />
+              </div>
               <p className="text-xs leading-5 text-[var(--shop-muted-foreground)]">
                 SEO-контент страницы отрендерен сервером, а добавление в корзину загружается через
-                cart remote.
+                cart remote. Избранное работает через account API с same-origin запросами.
               </p>
             </CardContent>
           </Card>
