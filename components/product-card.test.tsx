@@ -18,4 +18,25 @@ describe("ProductCard", () => {
       `/product/${product.slug}`,
     );
   });
+
+  it("renders product image when image URL is available", () => {
+    const product = {
+      ...fallbackProducts[0],
+      images: [
+        {
+          alt: "Product photo",
+          id: "image-1",
+          position: 0,
+          url: "https://example.com/product.jpg",
+        },
+      ],
+    };
+
+    render(<ProductCard product={product} />);
+
+    expect(screen.getByRole("img", { name: "Product photo" })).toHaveAttribute(
+      "src",
+      "https://example.com/product.jpg",
+    );
+  });
 });
