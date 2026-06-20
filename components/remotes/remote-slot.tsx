@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { ComponentType, ReactNode } from "react";
 import { Suspense, lazy, useEffect, useMemo, useState } from "react";
@@ -8,6 +8,7 @@ import { getCatalogFederationRuntime } from "../../lib/module-federation/runtime
 import { RemoteErrorBoundary } from "./remote-error-boundary";
 
 type RemoteSlotProps<TProps extends Record<string, unknown>> = {
+  errorFallback?: (error: Error, retryRemote: () => void) => ReactNode;
   expose: string;
   fallback: ReactNode;
   props?: TProps;
@@ -55,6 +56,7 @@ function resolveRemoteComponent<TProps extends Record<string, unknown>>(
 }
 
 export function RemoteSlot<TProps extends Record<string, unknown> = Record<string, never>>({
+  errorFallback,
   expose,
   fallback,
   props,
@@ -98,19 +100,23 @@ export function RemoteSlot<TProps extends Record<string, unknown> = Record<strin
 
   return (
     <RemoteErrorBoundary
-      fallback={(error, retryRemote) => (
-        <RemoteErrorFallback remoteName={label} onRetry={retryRemote}>
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-[var(--shop-foreground)]">
-              Не удалось загрузить cart remote.
-            </p>
-            <p className="text-xs text-[var(--shop-muted-foreground)]">{error.message}</p>
-            <Button size="sm" type="button" variant="outline" onClick={retryRemote}>
-              Повторить
-            </Button>
-          </div>
-        </RemoteErrorFallback>
-      )}
+      fallback={(error, retryRemote) =>
+        errorFallback ? (
+          errorFallback(error, retryRemote)
+        ) : (
+          <RemoteErrorFallback remoteName={label} onRetry={retryRemote}>
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-[var(--shop-foreground)]">
+                Не удалось загрузить remote.
+              </p>
+              <p className="text-xs text-[var(--shop-muted-foreground)]">{error.message}</p>
+              <Button size="sm" type="button" variant="outline" onClick={retryRemote}>
+                Повторить
+              </Button>
+            </div>
+          </RemoteErrorFallback>
+        )
+      }
       onError={(error, info) => {
         console.error("[shop-catalog] Ошибка загрузки remote", {
           error,

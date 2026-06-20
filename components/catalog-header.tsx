@@ -1,7 +1,8 @@
 ﻿import Link from "next/link";
-import { Heart, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import { Button, Container, Logo } from "@w1zll/shop-ui";
 
+import { AccountBadgeRemote, AccountMenuRemote } from "./remotes/account-remotes";
 import { CartIndicatorRemote } from "./remotes/cart-remotes";
 
 const navItems = [
@@ -37,22 +38,9 @@ export function CatalogHeader() {
               <Search className="size-4" aria-hidden="true" />
             </Link>
           </Button>
-          <div className="catalog-sm-up">
-            <Button asChild aria-label="Избранное" className="size-10 p-0" variant="ghost">
-              <a href="/account/favorites">
-                <Heart className="size-4" aria-hidden="true" />
-              </a>
-            </Button>
-          </div>
+          <AccountMenuRemote />
           <CartIndicatorRemote />
-          <div className="catalog-sm-up">
-            <Button asChild className="gap-2" variant="outline">
-              <a href="/account">
-                <UserRound className="size-4" aria-hidden="true" />
-                Войти
-              </a>
-            </Button>
-          </div>
+          <AccountBadgeRemote />
           <div className="catalog-lg-up">
             <Button asChild className="gap-2" variant="ghost">
               <Link href="/catalog">
