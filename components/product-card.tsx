@@ -2,20 +2,24 @@ import Link from "next/link";
 import { Badge, Button, Card, CardContent, Price } from "@w1zll/shop-ui";
 
 import { Product } from "../lib/types";
+import { ProductMedia } from "./product-media";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const imageLabel = product.images.length > 0 ? product.images[0].alt : product.category.name;
+  const primaryImage = product.images.length > 0 ? product.images[0] : undefined;
+  const imageLabel = primaryImage?.alt || product.category.name;
 
   return (
     <Card className="overflow-hidden">
       <CardContent className="flex h-full flex-col gap-4 p-4">
-        <div className="flex aspect-[4/3] items-center justify-center rounded-md bg-[var(--shop-secondary)] text-sm text-[var(--shop-muted-foreground)]">
-          {imageLabel}
-        </div>
+        <ProductMedia
+          className="aspect-[4/3] rounded-md"
+          fallbackLabel={imageLabel}
+          image={primaryImage}
+        />
         <div className="flex flex-1 flex-col gap-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
