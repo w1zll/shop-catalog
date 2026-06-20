@@ -1,7 +1,12 @@
-import Link from "next/link";
-import { Button } from "@w1zll/shop-ui";
+"use client";
+
+import { SyntheticEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { SlidersHorizontal, X } from "lucide-react";
+import { Button, Input } from "@w1zll/shop-ui";
 
 import { AvailableFilters, ProductListQuery } from "../lib/types";
+import { createProductListHref } from "../lib/product-list-url";
 
 const sortOptions = [
   { label: "Новые", value: "newest" },
@@ -12,40 +17,81 @@ const sortOptions = [
 
 interface CatalogControlsProps {
   filters: AvailableFilters;
+  pathname: string;
   query: ProductListQuery;
 }
 
-function createHref(query: ProductListQuery, patch: ProductListQuery) {
-  const params = new URLSearchParams();
-  const nextQuery = { ...query, ...patch, page: "1" };
-
-  for (const [key, value] of Object.entries(nextQuery)) {
-    if (value) {
-      params.set(key, value);
-    }
+function centsToRubles(value: string | null | undefined) {
+  if (!value) {
+    return "";
   }
 
-  const search = params.toString();
-  return search ? `/catalog?${search}` : "/catalog";
+  const parsedValue = Number(value);
+
+  if (!Number.isFinite(parsedValue)) {
+    return "";
+  }
+
+  return String(Math.floor(parsedValue / 100));
 }
 
-export function CatalogControls({ filters, query }: CatalogControlsProps) {
+function rublesToCents(value: string) {
+  const parsedValue = Number(value);
+
+  if (!Number.isFinite(parsedValue) || parsedValue < 0) {
+    return undefined;
+  }
+
+  return String(Math.round(parsedValue * 100));
+}
+
+export function CatalogControls({ filters, pathname, query }: CatalogControlsProps) {
+  const router = useRouter();
+  const [maxPrice, setMaxPrice] = useState(centsToRubles(query.maxPrice));
+  const [minPrice, setMinPrice] = useState(centsToRubles(query.minPrice));
+
+  useEffect(() => {
+    setMaxPrice(centsToRubles(query.maxPrice));
+    setMinPrice(centsToRubles(query.minPrice));
+  }, [query.maxPrice, query.minPrice]);
+
+  function updateQuery(patch: ProductListQuery) {
+    router.push(createProductListHref(pathname, query, patch));
+  }
+
+  function applyPriceRange(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    updateQuery({
+      maxPrice: rublesToCents(maxPrice),
+      minPrice: rublesToCents(minPrice),
+    });
+  }
+
+  function resetFilters() {
+    router.push(pathname);
+  }
+
   return (
     <aside className="space-y-5 rounded-lg border border-[var(--shop-border)] p-4">
       <div>
-        <h2 className="text-sm font-semibold">Сортировка</h2>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <label className="text-sm font-semibold" htmlFor="catalog-sort">
+          Сортировка
+        </label>
+        <select
+          className="mt-3 h-10 w-full rounded-md border border-[var(--shop-border)] bg-[var(--shop-background)] px-3 text-sm"
+          id="catalog-sort"
+          value={query.sort ?? "newest"}
+          onChange={(event) => {
+            updateQuery({ sort: event.target.value as ProductListQuery["sort"] });
+          }}
+        >
           {sortOptions.map((option) => (
-            <Button
-              key={option.value}
-              asChild
-              size="sm"
-              variant={query.sort === option.value ? "primary" : "outline"}
-            >
-              <Link href={createHref(query, { sort: option.value })}>{option.label}</Link>
-            </Button>
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       <div>
@@ -54,20 +100,71 @@ export function CatalogControls({ filters, query }: CatalogControlsProps) {
           {filters.brands.map((brand) => (
             <Button
               key={brand}
-              asChild
+              type="button"
               size="sm"
               variant={query.brand === brand ? "primary" : "outline"}
+              onClick={() => {
+                updateQuery({ brand: query.brand === brand ? undefined : brand });
+              }}
             >
-              <Link href={createHref(query, { brand })}>{brand}</Link>
+              {brand}
             </Button>
           ))}
         </div>
       </div>
 
-      <p className="text-xs leading-5 text-[var(--shop-muted-foreground)]">
-        Фильтры пока работают через URL и серверный рендер. Интерактивные controls появятся позже,
-        когда подключим cart remote и клиентское состояние.
-      </p>
+      <form className="space-y-3" onSubmit={applyPriceRange}>
+        <h2 className="text-sm font-semibold">Цена</h2>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+          <Input
+            inputMode="numeric"
+            min={0}
+            placeholder={
+              filters.minPriceCents ? `от ${String(Math.floor(filters.minPriceCents / 100))}` : "от"
+            }
+            type="number"
+            value={minPrice}
+            onChange={(event) => {
+              setMinPrice(event.target.value);
+            }}
+          />
+          <Input
+            inputMode="numeric"
+            min={0}
+            placeholder={
+              filters.maxPriceCents ? `до ${String(Math.ceil(filters.maxPriceCents / 100))}` : "до"
+            }
+            type="number"
+            value={maxPrice}
+            onChange={(event) => {
+              setMaxPrice(event.target.value);
+            }}
+          />
+        </div>
+        <Button className="w-full gap-2" size="sm" type="submit" variant="outline">
+          <SlidersHorizontal className="size-4" aria-hidden="true" />
+          Применить
+        </Button>
+      </form>
+
+      {filters.hasInStock ? (
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            checked={query.inStock === "true"}
+            className="size-4"
+            type="checkbox"
+            onChange={(event) => {
+              updateQuery({ inStock: event.target.checked ? "true" : undefined });
+            }}
+          />
+          Только в наличии
+        </label>
+      ) : null}
+
+      <Button className="w-full gap-2" size="sm" type="button" variant="ghost" onClick={resetFilters}>
+        <X className="size-4" aria-hidden="true" />
+        Сбросить
+      </Button>
     </aside>
   );
 }
