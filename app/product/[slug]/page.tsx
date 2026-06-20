@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Badge, Button, Card, CardContent, Container, Price } from "@w1zll/shop-ui";
 
 import { FavoriteButton } from "../../../components/favorite-button";
+import { ProductMedia } from "../../../components/product-media";
 import { AddToCartButtonRemote } from "../../../components/remotes/cart-remotes";
 import { getProduct } from "../../../lib/api-client";
 
@@ -34,7 +35,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getProduct(slug);
-  const imageLabel = product.images.length > 0 ? product.images[0].alt : product.category.name;
+  const primaryImage = product.images.length > 0 ? product.images[0] : undefined;
+  const imageLabel = primaryImage?.alt || product.category.name;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -44,6 +46,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     brand: product.brand,
     sku: product.id,
     category: product.category.name,
+    image: product.images.map((image) => image.url),
     offers: {
       "@type": "Offer",
       price: product.priceCents / 100,
@@ -61,14 +64,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
         <section className="space-y-4">
-          <div className="flex aspect-[4/3] items-center justify-center rounded-lg border border-[var(--shop-border)] bg-[var(--shop-secondary)] text-[var(--shop-muted-foreground)]">
-            {imageLabel}
-          </div>
+          <ProductMedia
+            className="aspect-[4/3] rounded-lg border border-[var(--shop-border)] text-base"
+            fallbackLabel={imageLabel}
+            image={primaryImage}
+            loading="eager"
+          />
           <div className="grid grid-cols-4 gap-2">
             {[0, 1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="aspect-square rounded-md border border-[var(--shop-border)] bg-[var(--shop-secondary)]"
+              <ProductMedia
+                key={product.images[item]?.id ?? item}
+                className="aspect-square rounded-md border border-[var(--shop-border)]"
+                fallbackLabel=""
+                image={product.images[item]}
               />
             ))}
           </div>
