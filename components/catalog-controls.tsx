@@ -7,6 +7,7 @@ import { Button, Input } from "@w1zll/shop-ui";
 
 import { AvailableFilters, ProductListQuery } from "../lib/types";
 import { createProductListHref } from "../lib/product-list-url";
+import styles from "./catalog-controls.module.css";
 
 const sortOptions = [
   { label: "Новые", value: "newest" },
@@ -115,7 +116,7 @@ export function CatalogControls({ filters, pathname, query }: CatalogControlsPro
 
       <form className="space-y-3" onSubmit={applyPriceRange}>
         <h2 className="text-sm font-semibold">Цена</h2>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+        <div className={styles.priceRangeGrid}>
           <Input
             inputMode="numeric"
             min={0}
