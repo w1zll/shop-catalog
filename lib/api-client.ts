@@ -59,9 +59,31 @@ async function fetchJson<T>(path: string, query?: ProductListQuery): Promise<T> 
 
 function filterFallbackProducts(query: ProductListQuery = {}) {
   const search = query.search?.trim().toLowerCase();
+  const minPrice = query.minPrice ? Number(query.minPrice) : undefined;
+  const maxPrice = query.maxPrice ? Number(query.maxPrice) : undefined;
 
   return fallbackProducts.filter((product) => {
     if (query.category && product.category.slug !== query.category) {
+      return false;
+    }
+
+    if (query.brand && product.brand.toLowerCase() !== query.brand.toLowerCase()) {
+      return false;
+    }
+
+    if (minPrice !== undefined && product.priceCents < minPrice) {
+      return false;
+    }
+
+    if (maxPrice !== undefined && product.priceCents > maxPrice) {
+      return false;
+    }
+
+    if (query.inStock === "true" && product.stock <= 0) {
+      return false;
+    }
+
+    if (query.inStock === "false" && product.stock > 0) {
       return false;
     }
 
@@ -103,7 +125,7 @@ export async function getProducts(query: ProductListQuery = {}): Promise<Product
   try {
     return await fetchJson<ProductList>("/products", query);
   } catch {
-    return createFallbackProductList(filterFallbackProducts(query));
+    return createFallbackProductList(filterFallbackProducts(query), query);
   }
 }
 

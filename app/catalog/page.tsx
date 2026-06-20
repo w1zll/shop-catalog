@@ -6,25 +6,35 @@ import { CatalogControls } from "../../components/catalog-controls";
 import { PaginationControls } from "../../components/pagination-controls";
 import { ProductGrid } from "../../components/product-grid";
 import { getCategories, getFeaturedProducts, getProducts } from "../../lib/api-client";
-import { PageSearchParams, readProductListQuery } from "../../lib/search-params";
+import {
+  hasProductListUrlState,
+  PageSearchParams,
+  readProductListQuery,
+} from "../../lib/search-params";
 
 interface CatalogPageProps {
   searchParams?: PageSearchParams;
 }
 
-export const metadata: Metadata = {
-  title: "Каталог",
-  description: "Серверный каталог товаров с категориями, фильтрами и сортировкой.",
-  alternates: {
-    canonical: "/catalog",
-  },
-  openGraph: {
+export async function generateMetadata({ searchParams }: CatalogPageProps): Promise<Metadata> {
+  const query = await readProductListQuery(searchParams);
+  const isFilteredUrl = hasProductListUrlState(query);
+
+  return {
     title: "Каталог",
     description: "Серверный каталог товаров с категориями, фильтрами и сортировкой.",
-    url: "/catalog",
-    type: "website",
-  },
-};
+    alternates: {
+      canonical: "/catalog",
+    },
+    openGraph: {
+      title: "Каталог",
+      description: "Серверный каталог товаров с категориями, фильтрами и сортировкой.",
+      url: "/catalog",
+      type: "website",
+    },
+    robots: isFilteredUrl ? { follow: true, index: false } : undefined,
+  };
+}
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const query = await readProductListQuery(searchParams);
@@ -75,7 +85,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
       ) : null}
 
       <section className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <CatalogControls filters={products.availableFilters} query={query} />
+        <CatalogControls filters={products.availableFilters} pathname="/catalog" query={query} />
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Все товары</h2>

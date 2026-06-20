@@ -1,4 +1,4 @@
-import { Category, Product, ProductList } from "./types";
+import { Category, Product, ProductList, ProductListQuery } from "./types";
 
 export const fallbackCategories: Category[] = [
   {
@@ -89,16 +89,45 @@ export const fallbackProducts: Product[] = [
   },
 ];
 
-export function createFallbackProductList(products = fallbackProducts): ProductList {
+function readPositiveInteger(value: string | undefined, fallback: number) {
+  const parsedValue = Number(value);
+
+  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : fallback;
+}
+
+function sortFallbackProducts(products: Product[], sort: ProductListQuery["sort"]) {
+  const sortedProducts = [...products];
+
+  if (sort === "price-asc") {
+    sortedProducts.sort((left, right) => left.priceCents - right.priceCents);
+  } else if (sort === "price-desc") {
+    sortedProducts.sort((left, right) => right.priceCents - left.priceCents);
+  } else if (sort === "name-asc") {
+    sortedProducts.sort((left, right) => left.name.localeCompare(right.name, "ru"));
+  }
+
+  return sortedProducts;
+}
+
+export function createFallbackProductList(
+  products = fallbackProducts,
+  query: ProductListQuery = {},
+): ProductList {
   const prices = products.map((product) => product.priceCents);
+  const limit = readPositiveInteger(query.limit, products.length || 12);
+  const total = products.length;
+  const totalPages = Math.ceil(total / limit);
+  const page = Math.min(readPositiveInteger(query.page, 1), Math.max(totalPages, 1));
+  const offset = (page - 1) * limit;
+  const items = sortFallbackProducts(products, query.sort).slice(offset, offset + limit);
 
   return {
-    items: products,
+    items,
     pagination: {
-      page: 1,
-      limit: products.length,
-      total: products.length,
-      totalPages: 1,
+      page,
+      limit,
+      total,
+      totalPages,
     },
     availableFilters: {
       brands: [...new Set(products.map((product) => product.brand))].sort(),
