@@ -1,7 +1,8 @@
-﻿import { EmptyState } from "@w1zll/shop-ui";
+import { EmptyState } from "@w1zll/shop-ui";
 
 import { Product } from "../lib/types";
 import { ProductCard } from "./product-card";
+import styles from "./product-grid.module.css";
 
 interface ProductGridProps {
   products: Product[];
@@ -19,13 +20,7 @@ export function ProductGrid({ products, variant = "default" }: ProductGridProps)
   }
 
   return (
-    <div
-      className={
-        variant === "featured"
-          ? "grid gap-4 sm:grid-cols-3"
-          : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      }
-    >
+    <div className={variant === "featured" ? styles.featuredProductGrid : styles.productGrid}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
