@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Button, Container, EmptyState, Input } from "@w1zll/shop-ui";
+import { Container, EmptyState } from "@w1zll/shop-ui";
 
 import { PaginationControls } from "../../components/pagination-controls";
 import { ProductGrid } from "../../components/product-grid";
+import { SearchBox } from "../../components/search-box";
 import { getProducts } from "../../lib/api-client";
 import { PageSearchParams, readProductListQuery } from "../../lib/search-params";
 
@@ -10,19 +11,29 @@ interface SearchPageProps {
   searchParams?: PageSearchParams;
 }
 
-export const metadata: Metadata = {
-  title: "Поиск",
-  description: "Поиск товаров по каталогу.",
-  alternates: {
-    canonical: "/search",
-  },
-  openGraph: {
-    title: "Поиск",
+export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+  const query = await readProductListQuery(searchParams);
+  const search = query.search?.trim();
+  const title = search ? `Поиск: ${search}` : "Поиск";
+
+  return {
+    title,
     description: "Поиск товаров по каталогу.",
-    url: "/search",
-    type: "website",
-  },
-};
+    alternates: {
+      canonical: "/search",
+    },
+    openGraph: {
+      title,
+      description: "Поиск товаров по каталогу.",
+      url: "/search",
+      type: "website",
+    },
+    robots: {
+      follow: true,
+      index: false,
+    },
+  };
+}
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = await readProductListQuery(searchParams);
@@ -48,15 +59,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </p>
       </section>
 
-      <form action="/search" className="flex max-w-2xl gap-2" method="get">
-        <Input
-          aria-label="Поисковый запрос"
-          defaultValue={search}
-          name="search"
-          placeholder="Например, наушники"
-        />
-        <Button type="submit">Найти</Button>
-      </form>
+      <SearchBox initialValue={search ?? ""} />
 
       {products ? (
         <section className="space-y-4">

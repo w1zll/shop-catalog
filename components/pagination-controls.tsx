@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@w1zll/shop-ui";
 
 import { Pagination, ProductListQuery } from "../lib/types";
+import { createProductListHref } from "../lib/product-list-url";
 
 interface PaginationControlsProps {
   pagination: Pagination;
@@ -11,16 +12,7 @@ interface PaginationControlsProps {
 }
 
 function createPageHref(pathname: string, query: ProductListQuery, page: number) {
-  const params = new URLSearchParams();
-
-  for (const [key, value] of Object.entries({ ...query, page: String(page) })) {
-    if (value) {
-      params.set(key, value);
-    }
-  }
-
-  const search = params.toString();
-  return `${pathname}${search ? `?${search}` : ""}` as Route;
+  return createProductListHref(pathname, query, { page: String(page) }, false) as Route;
 }
 
 export function PaginationControls({ pagination, query, pathname }: PaginationControlsProps) {

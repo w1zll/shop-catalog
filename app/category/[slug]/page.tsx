@@ -5,7 +5,11 @@ import { CatalogControls } from "../../../components/catalog-controls";
 import { PaginationControls } from "../../../components/pagination-controls";
 import { ProductGrid } from "../../../components/product-grid";
 import { getCategory, getProducts } from "../../../lib/api-client";
-import { PageSearchParams, readProductListQuery } from "../../../lib/search-params";
+import {
+  hasProductListUrlState,
+  PageSearchParams,
+  readProductListQuery,
+} from "../../../lib/search-params";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -14,8 +18,12 @@ interface CategoryPageProps {
   searchParams?: PageSearchParams;
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const query = await readProductListQuery(searchParams);
   const category = await getCategory(slug);
 
   return {
@@ -30,6 +38,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       url: `/category/${category.slug}`,
       type: "website",
     },
+    robots: hasProductListUrlState(query) ? { follow: true, index: false } : undefined,
   };
 }
 
@@ -67,7 +76,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <CatalogControls filters={products.availableFilters} query={query} />
+        <CatalogControls
+          filters={products.availableFilters}
+          pathname={`/category/${category.slug}`}
+          query={query}
+        />
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Товары категории</h2>
