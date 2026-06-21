@@ -33,8 +33,8 @@ export function CatalogHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild aria-label="Поиск" className="size-10 p-0" variant="ghost">
-            <Link href="/search">
+          <Button asChild className="size-10 cursor-pointer p-0" variant="ghost">
+            <Link href="/search" aria-label="Поиск">
               <Search className="size-4" aria-hidden="true" />
             </Link>
           </Button>
