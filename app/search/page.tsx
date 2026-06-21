@@ -6,6 +6,7 @@ import { ProductGrid } from "../../components/product-grid";
 import { SearchBox } from "../../components/search-box";
 import { getProducts } from "../../lib/api-client";
 import { PageSearchParams, readProductListQuery } from "../../lib/search-params";
+import { createSearchMetadata, createSearchResultsPageJsonLd } from "../../lib/seo";
 
 interface SearchPageProps {
   searchParams?: PageSearchParams;
@@ -14,25 +15,8 @@ interface SearchPageProps {
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
   const query = await readProductListQuery(searchParams);
   const search = query.search?.trim();
-  const title = search ? `Поиск: ${search}` : "Поиск";
 
-  return {
-    title,
-    description: "Поиск товаров по каталогу.",
-    alternates: {
-      canonical: "/search",
-    },
-    openGraph: {
-      title,
-      description: "Поиск товаров по каталогу.",
-      url: "/search",
-      type: "website",
-    },
-    robots: {
-      follow: true,
-      index: false,
-    },
-  };
+  return createSearchMetadata(search);
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -40,11 +24,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const search = query.search?.trim();
   const products = search ? await getProducts(query) : null;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SearchResultsPage",
-    name: search ? `Поиск: ${search}` : "Поиск",
-  };
+  const jsonLd = createSearchResultsPageJsonLd(search);
 
   return (
     <Container className="space-y-8 py-8">

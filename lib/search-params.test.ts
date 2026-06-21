@@ -39,6 +39,21 @@ describe("readProductListQuery", () => {
     });
   });
 
+  it("uses the first array value and trims text URL parameters", async () => {
+    await expect(
+      readProductListQuery(
+        Promise.resolve({
+          brand: [" AirBeat ", "Pulse"],
+          q: [" watch ", "lamp"],
+          search: [" headphones ", "watch"],
+        }),
+      ),
+    ).resolves.toMatchObject({
+      brand: "AirBeat",
+      search: "headphones",
+    });
+  });
+
   it("drops empty and unsupported URL parameters", async () => {
     await expect(
       readProductListQuery(

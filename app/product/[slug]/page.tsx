@@ -6,6 +6,7 @@ import { FavoriteButton } from "../../../components/favorite-button";
 import { ProductMedia } from "../../../components/product-media";
 import { AddToCartButtonRemote } from "../../../components/remotes/cart-remotes";
 import { getProduct } from "../../../lib/api-client";
+import { createProductJsonLd, createProductMetadata } from "../../../lib/seo";
 
 interface ProductPageProps {
   params: Promise<{
@@ -17,19 +18,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { slug } = await params;
   const product = await getProduct(slug);
 
-  return {
-    title: product.name,
-    description: product.description,
-    alternates: {
-      canonical: `/product/${product.slug}`,
-    },
-    openGraph: {
-      title: product.name,
-      description: product.description,
-      url: `/product/${product.slug}`,
-      type: "website",
-    },
-  };
+  return createProductMetadata(product);
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -38,23 +27,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const primaryImage = product.images.length > 0 ? product.images[0] : undefined;
   const imageLabel = primaryImage?.alt || product.category.name;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    brand: product.brand,
-    sku: product.id,
-    category: product.category.name,
-    image: product.images.map((image) => image.url),
-    offers: {
-      "@type": "Offer",
-      price: product.priceCents / 100,
-      priceCurrency: "RUB",
-      availability:
-        product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-    },
-  };
+  const jsonLd = createProductJsonLd(product);
 
   return (
     <Container className="space-y-8 py-8">
