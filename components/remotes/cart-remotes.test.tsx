@@ -67,4 +67,19 @@ describe("cart remotes", () => {
     });
     expect(screen.getByRole("button", { name: "Добавить в корзину" })).toBeDisabled();
   });
+
+  it("renders a disabled compact fallback when the add-to-cart remote fails", () => {
+    remoteSlotMock.mockImplementation(({ errorFallback, fallback }: RemoteSlotMockProps) =>
+      errorFallback ? errorFallback(new Error("cart remote failed"), vi.fn()) : fallback,
+    );
+
+    render(<AddToCartButtonRemote className="product-action" productId="product-1" />);
+
+    expect(screen.getByRole("button", { name: "Корзина временно недоступна" })).toBeDisabled();
+    expect(screen.getByTitle(/cart remote/)).toBeInTheDocument();
+    expect(getLastRemoteSlotProps()).toMatchObject({
+      expose: "AddToCartButton",
+      remoteName: "cart",
+    });
+  });
 });

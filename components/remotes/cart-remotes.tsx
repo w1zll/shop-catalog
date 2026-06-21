@@ -34,19 +34,40 @@ export function CartIndicatorRemote() {
   );
 }
 
-function AddToCartButtonFallback({ disabled }: Readonly<{ disabled?: boolean }>) {
+function AddToCartButtonFallback({
+  className = "w-full",
+  disabled,
+}: Readonly<{ className?: string; disabled?: boolean }>) {
   return (
-    <Button className="w-full" disabled={disabled} type="button">
+    <Button className={className} disabled={disabled} type="button">
       Добавить в корзину
     </Button>
+  );
+}
+
+function UnavailableAddToCartButton({ className = "w-full" }: Readonly<{ className?: string }>) {
+  return (
+    <span className="block" title="Корзина временно недоступна: cart remote не загрузился">
+      <Button
+        aria-label="Корзина временно недоступна"
+        className={`${className} gap-2 border-red-500/70 text-red-600 opacity-100`}
+        disabled
+        type="button"
+        variant="outline"
+      >
+        <ShoppingCart className="size-4" aria-hidden="true" />
+        Корзина недоступна
+      </Button>
+    </span>
   );
 }
 
 export function AddToCartButtonRemote(props: AddToCartButtonRemoteProps) {
   return (
     <RemoteSlot
+      errorFallback={() => <UnavailableAddToCartButton className={props.className} />}
       expose="AddToCartButton"
-      fallback={<AddToCartButtonFallback disabled={props.disabled} />}
+      fallback={<AddToCartButtonFallback className={props.className} disabled={props.disabled} />}
       props={props}
       remoteName="cart"
     />
