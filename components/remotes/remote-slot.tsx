@@ -24,7 +24,7 @@ type RemoteModule<TProps extends Record<string, unknown>> =
 
 const DEFAULT_TIMEOUT_MS = 8_000;
 
-function withTimeout<TResult>(promise: Promise<TResult>, timeoutMs: number, label: string) {
+export function withTimeout<TResult>(promise: Promise<TResult>, timeoutMs: number, label: string) {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -40,7 +40,7 @@ function withTimeout<TResult>(promise: Promise<TResult>, timeoutMs: number, labe
   });
 }
 
-function resolveRemoteComponent<TProps extends Record<string, unknown>>(
+export function resolveRemoteComponent<TProps extends Record<string, unknown>>(
   remoteModule: RemoteModule<TProps> | null,
   label: string,
 ) {
