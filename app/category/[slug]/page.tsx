@@ -10,6 +10,7 @@ import {
   PageSearchParams,
   readProductListQuery,
 } from "../../../lib/search-params";
+import { createCategoryMetadata, createCollectionPageJsonLd } from "../../../lib/seo";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -26,20 +27,7 @@ export async function generateMetadata({
   const query = await readProductListQuery(searchParams);
   const category = await getCategory(slug);
 
-  return {
-    title: category.name,
-    description: category.description ?? `Товары категории ${category.name}.`,
-    alternates: {
-      canonical: `/category/${category.slug}`,
-    },
-    openGraph: {
-      title: category.name,
-      description: category.description ?? `Товары категории ${category.name}.`,
-      url: `/category/${category.slug}`,
-      type: "website",
-    },
-    robots: hasProductListUrlState(query) ? { follow: true, index: false } : undefined,
-  };
+  return createCategoryMetadata(category, hasProductListUrlState(query));
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
@@ -51,13 +39,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   };
   const products = await getProducts(query);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
+  const jsonLd = createCollectionPageJsonLd({
     name: category.name,
     description: category.description,
     numberOfItems: products.pagination.total,
-  };
+  });
 
   return (
     <Container className="space-y-8 py-8">

@@ -18,6 +18,17 @@ describe("product list URL helpers", () => {
     );
   });
 
+  it("omits empty values and non-URL product list state", () => {
+    const params = buildProductListSearchParams({
+      brand: " ",
+      category: "electronics",
+      inStock: "false",
+      search: "",
+    });
+
+    expect(params.toString()).toBe("inStock=false");
+  });
+
   it("creates href and resets page for filter changes", () => {
     expect(
       createProductListHref(
