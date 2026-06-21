@@ -11,6 +11,7 @@ import {
   PageSearchParams,
   readProductListQuery,
 } from "../../lib/search-params";
+import { createCatalogMetadata, createCollectionPageJsonLd } from "../../lib/seo";
 
 interface CatalogPageProps {
   searchParams?: PageSearchParams;
@@ -18,22 +19,8 @@ interface CatalogPageProps {
 
 export async function generateMetadata({ searchParams }: CatalogPageProps): Promise<Metadata> {
   const query = await readProductListQuery(searchParams);
-  const isFilteredUrl = hasProductListUrlState(query);
 
-  return {
-    title: "Каталог",
-    description: "Серверный каталог товаров с категориями, фильтрами и сортировкой.",
-    alternates: {
-      canonical: "/catalog",
-    },
-    openGraph: {
-      title: "Каталог",
-      description: "Серверный каталог товаров с категориями, фильтрами и сортировкой.",
-      url: "/catalog",
-      type: "website",
-    },
-    robots: isFilteredUrl ? { follow: true, index: false } : undefined,
-  };
+  return createCatalogMetadata(hasProductListUrlState(query));
 }
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
@@ -44,12 +31,10 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     getFeaturedProducts(),
   ]);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
+  const jsonLd = createCollectionPageJsonLd({
     name: "Каталог",
     numberOfItems: products.pagination.total,
-  };
+  });
 
   return (
     <Container className="space-y-8 py-8">
