@@ -209,14 +209,15 @@ export function FavoriteButton({ productId }: Readonly<{ productId: string }>) {
     }
   }
 
+  const isDisabled = isLoading || isMutating;
   const label = getButtonLabel(isFavorite, authRequired, isLoading);
 
   return (
     <div className="space-y-2">
       <Button
         aria-pressed={authRequired ? undefined : isFavorite}
-        className="w-full gap-2"
-        disabled={isLoading || isMutating}
+        className={isDisabled ? "w-full gap-2" : "w-full cursor-pointer gap-2"}
+        disabled={isDisabled}
         onClick={() => {
           void toggleFavorite();
         }}
