@@ -38,12 +38,14 @@ cp .env.example .env
 
 ```text
 API_INTERNAL_URL=http://localhost:4000/api/v1
+API_PROXY_ORIGIN=http://localhost:4000
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_CART_MANIFEST_URL=http://localhost:3002/mf-manifest.json
 NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=http://localhost:3003/mf-manifest.json
 ```
 
 `API_INTERNAL_URL` используется только на сервере и не должен попадать в клиентский bundle.
+`API_PROXY_ORIGIN` используется в rewrites для browser-запросов `/api/v1/*` при standalone запуске catalog.
 `NEXT_PUBLIC_SITE_URL` задаёт публичный origin shell для canonical и Open Graph URL.
 `NEXT_PUBLIC_CART_MANIFEST_URL` используется только в браузере для загрузки cart remote.
 `NEXT_PUBLIC_ACCOUNT_MANIFEST_URL` используется только в браузере для загрузки account remote.
@@ -151,6 +153,7 @@ Build Command: pnpm build
 NODE_VERSION=24
 NPM_TOKEN=<GitHub Packages token с read:packages>
 API_INTERNAL_URL=https://<render-api-host>/api/v1
+API_PROXY_ORIGIN=https://<render-api-host>
 NEXT_PUBLIC_SITE_URL=https://<shell-host>
 NEXT_PUBLIC_CART_MANIFEST_URL=https://<cart-remote-host>/mf-manifest.json
 NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=https://<account-remote-host>/mf-manifest.json
