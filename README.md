@@ -40,11 +40,13 @@ cp .env.example .env
 API_INTERNAL_URL=http://localhost:4000/api/v1
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_CART_MANIFEST_URL=http://localhost:3002/mf-manifest.json
+NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=http://localhost:3003/mf-manifest.json
 ```
 
 `API_INTERNAL_URL` используется только на сервере и не должен попадать в клиентский bundle.
 `NEXT_PUBLIC_SITE_URL` задаёт публичный origin shell для canonical и Open Graph URL.
 `NEXT_PUBLIC_CART_MANIFEST_URL` используется только в браузере для загрузки cart remote.
+`NEXT_PUBLIC_ACCOUNT_MANIFEST_URL` используется только в браузере для загрузки account remote.
 
 ## Локальная разработка
 
@@ -129,6 +131,36 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+```
+
+## Деплой на Vercel
+
+Catalog разворачивается как Next.js-приложение. В `vercel.json` зафиксированы команды install/build, чтобы Vercel до установки зависимостей настроил доступ к приватному `@w1zll/shop-ui`.
+
+Настройки проекта:
+
+```text
+Framework Preset: Next.js
+Install Command: corepack enable && pnpm config set @w1zll:registry https://npm.pkg.github.com && pnpm config set '//npm.pkg.github.com/:_authToken' "$NPM_TOKEN" && pnpm install --frozen-lockfile
+Build Command: pnpm build
+```
+
+Переменные окружения:
+
+```text
+NODE_VERSION=24
+NPM_TOKEN=<GitHub Packages token с read:packages>
+API_INTERNAL_URL=https://<render-api-host>/api/v1
+NEXT_PUBLIC_SITE_URL=https://<shell-host>
+NEXT_PUBLIC_CART_MANIFEST_URL=https://<cart-remote-host>/mf-manifest.json
+NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=https://<account-remote-host>/mf-manifest.json
+```
+
+После настройки shell proxy manifest URLs должны стать same-origin:
+
+```text
+NEXT_PUBLIC_CART_MANIFEST_URL=/mf/cart/mf-manifest.json
+NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=/mf/account/mf-manifest.json
 ```
 
 ## Текущие ограничения
