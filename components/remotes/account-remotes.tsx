@@ -6,19 +6,14 @@ import { Button } from "@w1zll/shop-ui";
 import { RemoteSlot } from "./remote-slot";
 
 export function AccountBadgeFallback() {
-  return (
-    <div className="catalog-sm-up">
-      <AccountBadgeButton />
-    </div>
-  );
+  return <AccountBadgeButton />;
 }
 
 function AccountBadgeButton() {
   return (
-    <Button asChild className="gap-2" variant="outline">
-      <a href="/account">
+    <Button asChild className="size-10 p-0" variant="outline">
+      <a href="/account" aria-label="Войти в аккаунт">
         <UserRound className="size-4" aria-hidden="true" />
-        Войти
       </a>
     </Button>
   );
@@ -29,6 +24,8 @@ export function AccountBadgeRemote() {
     <RemoteSlot
       errorFallback={() => (
         <UnavailableAccountControl
+          icon="user"
+          iconOnly
           label="Аккаунт временно недоступен"
           title="Аккаунт временно недоступен: account remote не загрузился"
         />
@@ -76,12 +73,13 @@ export function AccountMenuRemote() {
 }
 
 function UnavailableAccountControl({
+  icon = "heart",
   iconOnly = false,
   label,
   title,
-}: Readonly<{ iconOnly?: boolean; label: string; title: string }>) {
+}: Readonly<{ icon?: "heart" | "user"; iconOnly?: boolean; label: string; title: string }>) {
   return (
-    <span className="catalog-sm-up" title={title}>
+    <span title={title}>
       <Button
         aria-label={label}
         className={
@@ -94,7 +92,11 @@ function UnavailableAccountControl({
         variant={iconOnly ? "ghost" : "outline"}
       >
         {iconOnly ? (
-          <Heart className="size-4" aria-hidden="true" />
+          icon === "user" ? (
+            <UserRound className="size-4" aria-hidden="true" />
+          ) : (
+            <Heart className="size-4" aria-hidden="true" />
+          )
         ) : (
           <>
             <UserRound className="size-4" aria-hidden="true" />
