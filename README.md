@@ -1,6 +1,6 @@
 # Shop Catalog
 
-`shop-catalog` - отдельная Next.js catalog zone демонстрационного магазина на микрофронтендах.
+`shop-catalog` - отдельная Next.js catalog zone интернет-магазина.
 
 ## Ответственность
 
@@ -14,7 +14,7 @@
 - подключение cart remote для Header и product page;
 - самостоятельный deploy как Next.js zone.
 
-На текущем этапе catalog zone может работать самостоятельно на `3001` и через shell на `3000`.
+catalog zone может работать самостоятельно на `3001` и через shell на `3000`.
 
 ## Технологии
 
@@ -53,7 +53,7 @@ NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=http://localhost:3003/mf-manifest.json
 ## Локальная разработка
 
 Перед установкой зависимостей нужен доступ к GitHub Packages для `@w1zll/shop-ui`.
-Токен не хранится в репозитории. Registry для scope настроен в `.npmrc`, auth token должен быть в user-level `~/.npmrc`.
+Registry для scope настроен в `.npmrc`, auth token должен быть в user-level `~/.npmrc`.
 
 ```bash
 pnpm install
@@ -106,19 +106,12 @@ Shell должен проксировать `/catalog-static/*` в catalog zone.
 - Catalog владеет только маршрутами `/catalog`, `/category/[slug]`, `/product/[slug]` и `/search`.
 - Внутренние переходы внутри catalog zone используют `next/link`.
 - Переходы из catalog zone в shell-маршруты (`/`, `/cart`, `/account`) выполняются обычными ссылками `<a>`, чтобы не запускать client-side navigation другого Next-приложения.
-- Header визуально синхронизирован с shell, но индикатор корзины и аккаунта остаются временными заглушками до подключения remotes.
-- Header использует `CartIndicator` из cart remote. Account controls остаются временной заглушкой.
+- Header визуально синхронизирован с shell.
+- Header использует exposed-компоненты из cart remote и account remote.
 
 ## Module Federation
 
-Catalog использует Module Federation Runtime в client components и не подключает Next Federation Plugin.
-
-Подключены exposed-компоненты cart remote:
-
-```text
-cart/CartIndicator
-cart/AddToCartButton
-```
+Catalog использует Module Federation Runtime в client components.
 
 `CartIndicator` рендерится в Header. `AddToCartButton` рендерится на `/product/[slug]`.
 SEO-критичный контент страницы товара остаётся серверным: название, описание, цена, metadata и JSON-LD
@@ -165,9 +158,3 @@ NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=https://<account-remote-host>/mf-manifest.json
 NEXT_PUBLIC_CART_MANIFEST_URL=/mf/cart/mf-manifest.json
 NEXT_PUBLIC_ACCOUNT_MANIFEST_URL=/mf/account/mf-manifest.json
 ```
-
-## Текущие ограничения
-
-- данные берутся из API, но при недоступном API используется локальный fallback;
-- фильтры, сортировка и пагинация пока реализованы как URL links;
-- account в Header пока не подключён к Module Federation remote.
