@@ -80,7 +80,7 @@ export function CatalogControls({ filters, pathname, query }: CatalogControlsPro
           Сортировка
         </label>
         <select
-          className="mt-3 h-10 w-full rounded-md border border-[var(--shop-border)] bg-[var(--shop-background)] px-3 text-sm"
+          className="mt-3 h-10 w-full rounded-md border border-[var(--shop-border)] bg-[var(--shop-background)] px-3 text-base sm:text-sm"
           id="catalog-sort"
           value={query.sort ?? "newest"}
           onChange={(event) => {
