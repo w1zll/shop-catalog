@@ -33,11 +33,13 @@ a {
   display: none;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 880px) {
   .catalog-desktop-nav {
     display: flex;
   }
+}
 
+@media (min-width: 640px) {
   .catalog-sm-up {
     display: block;
   }
@@ -46,13 +48,5 @@ a {
 @media (min-width: 1024px) {
   .catalog-lg-up {
     display: block;
-  }
-}
-
-@media (max-width: 639px) {
-  input:not([type="checkbox"]):not([type="radio"]),
-  select,
-  textarea {
-    font-size: 16px;
   }
 }

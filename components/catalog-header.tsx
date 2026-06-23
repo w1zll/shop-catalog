@@ -2,7 +2,7 @@
 import { Search, ShoppingBag } from "lucide-react";
 import { Button, Container, Logo } from "@w1zll/shop-ui";
 
-import { AccountBadgeRemote, AccountMenuRemote } from "./remotes/account-remotes";
+import { AccountBadgeRemote } from "./remotes/account-remotes";
 import { CartIndicatorRemote } from "./remotes/cart-remotes";
 
 const navItems = [
@@ -38,9 +38,7 @@ export function CatalogHeader() {
               <Search className="size-4" aria-hidden="true" />
             </Link>
           </Button>
-          <AccountMenuRemote />
           <CartIndicatorRemote />
-          <AccountBadgeRemote />
           <div className="catalog-lg-up">
             <Button asChild className="gap-2" variant="ghost">
               <Link href="/catalog">
@@ -49,6 +47,7 @@ export function CatalogHeader() {
               </Link>
             </Button>
           </div>
+          <AccountBadgeRemote />
         </div>
       </Container>
     </header>
